@@ -1,0 +1,99 @@
+Vad är pull repektive push?
+
+pull = Hämtar ändringar från remote och implementerar lokalt. 
+
+push = Skickar in lokala ändringar till remote repository.
+
+Skillnad = pull hämtar och implementerar, push skickar.
+
+När använder man log respektive status?
+
+log = visar historik av commits, vad som hänt i aktuella katalogen.
+
+status = visar om allt är comittat eller om det är något som behöver fixas.
+Visar även om det finns något som behöver addas
+
+Skillnad = log visar historiken, vad som hänt i aktuella katalogen. 
+Status visar om allt är up to date eller om något behöver fixas.
+
+Vad är en Git branch och varför är de viktiga?
+
+En branch är en separat utvecklingslinje i Git. Viktiga då de gör att 
+man kan arbeta i olika utvecklingslinjer och exempelvis testa saker utan 
+att påverka ursprungskoden. Gör även att flera utvecklare kan arbeta på 
+olika linjer tillsammans.
+
+
+Det finns flera sätt att rulla tillbaka koden till ett tidigare tillstånd.
+Förklara skillnaden och motivera när man skulle använda den ena eller andra
+metoden. Ge exempel på de kommandon du använder för att göra detta och 
+visa att det fungerar, vilken output du fick från git-kommandona. Tips: 
+Gör exemplen med att backa i en branch så att master fortfarande är
+korrekt. 
+
+git restore = återställer till en tidigare version.  Påverkar inte 
+commithistoriken. Exempelvis när man vill ångra ändringar som inte blivit
+comittade. git restore flyttar inte HEAD och tar inte bort commits. 
+Bra när man vill kasta ändringar som inte är commitade.
+Exempel på output:
+
+git restore --staged .
+lindbom_89@LAPTOP-10IPLLAS:~/git/workshop6$ git status
+On branch main
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        banana
+        cactus.txt
+
+nothing added to commit but untracked files present (use "git add" 
+to track)
+
+git reset = kan flytta branch till en tidigare commit i historiken. Finns 
+i tre olika lägen.
+	git reset --soft, backar till tidigare commit, men behåller 
+ändringarna som gjorts i koden. Ändringarna ligger kvar i staging, så 
+kan göra ny commit direkt. Bra att använda när man vill göra lokal 
+commit.
+Exempel på output:
+
+git log --oneline
+dcb05e4 (HEAD -> main) Revert "added hej again"
+3d1eeb9 Revert "trying revert"
+git reset --soft HEAD~1
+git log --oneline
+3d1eeb9 (HEAD -> main) Revert "trying revert"
+403826d trying revert
+d3c2783 added hej again
+
+	git reset --mixed, backar till tidigare commit, men behåller 
+ändringarna i mina filer. Ändringarna ligger inte längre i staging så 
+man måste göra git add innan man kan göra ny commit. Bra att använda 
+när man vill ändra koden eller välja vad som ska committas.
+Exempel på output:
+
+git reset HEAD~1
+Unstaged changes after reset:
+M       hej.txt
+
+ 
+	git reset --hard, backar till tidigare commit och återställer 
+filerna till hur de såg ut då. Ändringar i staging och arbetskatalog 
+kastas. Bra att använda när man vill kasta lokala ändringar och återgå 
+helt.
+Exempel på output:
+
+git reset --hard HEAD~1
+HEAD is now at d3c2783 added hej again
+
+
+git revert = Skapar ny commit som ångrar en tidigare commit. Ändrar inte
+historiken, säkrare att använda. Fungerar även om ändringen är delad
+remote.
+Exempel på output:
+
+git revert --no-edit d3c2783
+On branch main
+nothing to commit, working tree clean
+workshop6$ git log --oneline
+dcb05e4 (HEAD -> main) 
+Revert "added hej again"
